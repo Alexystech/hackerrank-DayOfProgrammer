@@ -8,9 +8,10 @@ import java.time.YearMonth;
 
 public class Main {
 	public static void main(String... args) {
-		int year = 2016;
+		int year = 1918;
 		Result result = new Result();
-		result.dayOfProgrammer(year);
+		String dayOfProgrammer = result.dayOfProgrammer(year);
+		System.out.println(dayOfProgrammer);
 	}
 }
 
@@ -24,17 +25,21 @@ class Result {
 			System.out.println("is Julian");
 			days = 256 - summatoryOfDays(year, 2);
 		}
-		System.out.println(days);
+
+		if (year == 1918) {
+			days += 13;
+		}
 		
-		return "";
+		return days + ".09." + year;
 	}
 
 	public static boolean isGregorian(int year) {
-		return year >= 1918;
+		return year >= 1919;
 	}
 
 	public static int summatoryOfDays(int year, int calendarSystem) {
 		int summatory = 0;
+
 		switch (calendarSystem) {
 			case 1: // Gregorian
 				for (int gregorianMonth = 1; gregorianMonth <= 8; gregorianMonth++) {
@@ -49,6 +54,7 @@ class Result {
 			default:
 				break;
 		}
+
 		return summatory;
 	}
 
@@ -60,13 +66,29 @@ class Result {
 				days = yearMonth.lengthOfMonth();
 				break;
 			case 2: // Julian
-				LocalDate julianDate = LocalDate.of(year, month, 1);
-				ValueRange range = julianDate.range(ChronoField.DAY_OF_MONTH);
-				days = (int) range.getMaximum();
+				days = getDaysInMonth(year, month);
 				break;
 			default:
 				break;
 		}
 		return days;
 	}
+
+	public static int getDaysInMonth(int year, int month) {
+        if (month == 2) {
+            if (isJulianLeapYear(year)) {
+                return 29;
+            } else {
+                return 28;
+            }
+        } else if (month == 4 || month == 6 || month == 9 || month == 11) {
+            return 30;
+        } else {
+            return 31;
+        }
+    }
+
+    public static boolean isJulianLeapYear(int year) {
+        return year % 4 == 0;
+    }
 }
